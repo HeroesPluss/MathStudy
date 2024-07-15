@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Luyện Toán Cho Trẻ</title>
+        <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet" />
+    </head>
+    <body class="bg-gray-100 flex justify-center items-center min-h-screen">
+        <div class="bg-white shadow-md rounded-lg p-6 max-w-4xl w-full">
+            <h1 class="text-2xl font-bold mb-4 text-center">Luyện Toán Cho Trẻ</h1>
+            <div id="questions" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
+            <div class="text-center mt-6">
+                <button onclick="checkAnswers()" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 focus:outline-none">Kiểm Tra</button>
+                <button onclick="generateQuestions()" class="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600 focus:outline-none ml-2">Làm Lại</button>
+            </div>
+            <div id="score" class="text-center mt-4 text-xl font-semibold"></div>
+        </div>
+
+        <script>
+            document.addEventListener("DOMContentLoaded", () => {
+                generateQuestions();
+            });
+
+            function generateQuestions() {
+                const questionsContainer = document.getElementById("questions");
+                questionsContainer.innerHTML = "";
+                for (let i = 0; i < 20; i++) {
+                    const question = generateRandomQuestion();
+                    const questionElement = document.createElement("div");
+                    questionElement.className = "question bg-gray-50 p-4 rounded shadow-sm";
+                    questionElement.innerHTML = formatQuestion(question);
+                    questionsContainer.appendChild(questionElement);
+                }
+                document.getElementById("score").innerText = "";
+            }
+
+            function generateRandomQuestion() {
+                const operations = ["+", "-", "*", "/"];
+                const operation = operations[Math.floor(Math.random() * operations.length)];
+                let num1, num2, question, answer, position;
+
+                switch (operation) {
+                    case "+":
+                        num1 = Math.floor(Math.random() * 50);
+                        num2 = Math.floor(Math.random() * 50);
+                        answer = num1 + num2;
+                        break;
+                    case "-":
+                        num1 = Math.floor(Math.random() * 50) + 30;
+                        num2 = Math.floor(Math.random() * 30);
+                        answer = num1 - num2;
+                        break;
+                    case "*":
+                        num1 = Math.floor(Math.random() * 10) + 1;
+                        num2 = Math.floor(Math.random() * 10) + 1;
+                        answer = num1 * num2;
+                        break;
+                    case "/":
+                        num2 = Math.floor(Math.random() * 10) + 1;
+                        answer = Math.floor(Math.random() * 10) + 1;
+                        num1 = answer * num2;
+                        break;
+                }
+
+                position = Math.floor(Math.random() * 3);
+                switch (position) {
+                    case 0:
+                        question = `${num1} ${operation} ${num2} = <input type="text" class="answer border rounded w-12 text-center mx-1" data-answer="${answer}">`;
+                        break;
+                    case 1:
+                        question = `${num1} ${operation} <input type="text" class="answer border rounded w-12 text-center mx-1" data-answer="${num2}"> = ${answer}`;
+                        break;
+                    case 2:
+                        question = `<input type="text" class="answer border rounded w-12 text-center mx-1" data-answer="${num1}"> ${operation} ${num2} = ${answer}`;
+                        break;
+                }
+
+                return { question, answer };
+            }
+
+            function formatQuestion(question) {
+                return question.question;
+            }
+
+            function checkAnswers() {
+                const answers = document.getElementsByClassName("answer");
+                let score = 0;
+                for (let i = 0; i < answers.length; i++) {
+                    const userAnswer = answers[i].value;
+                    const correctAnswer = answers[i].getAttribute("data-answer");
+                    if (parseInt(userAnswer) === parseInt(correctAnswer)) {
+                        score++;
+                    }
+                }
+                document.getElementById("score").innerText = `Điểm số của bạn là: ${score}/20`;
+            }
+        </script>
+    </body>
+</html>
